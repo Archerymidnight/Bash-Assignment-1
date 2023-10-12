@@ -1,3 +1,8 @@
+add_file () {
+    touch $1
+    cd ..
+}
+
 while true; do 
 
 
@@ -33,14 +38,23 @@ while true; do
 
             read newFileChoice
 
-            if [${newFileChoice^^} = 'Y']
+            if [ ${newFileChoice^^} = 'Y' ]
             then
                 echo "Enter the name of the new file"
 
                 read fileName
 
                 add_file "$fileName"
+            elif [ ${newFileChoice^^} == "N" ]
+            then
+                break
+            
+            else
+            echo "Invalid input, please try again
 
+            "
+
+            fi
         done
 
     elif [ $menuChoice = 0 ]
@@ -50,7 +64,3 @@ while true; do
 
     fi
 done
-add_file () {
-    touch $1
-    cd ..
-}
