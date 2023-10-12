@@ -71,6 +71,8 @@ while true; do
                     add_file "$fileName"
                 elif [ "${newFileChoice^^}" == "N" ]
                 then
+                    chgrp -R checkout "$repName"
+                    chmod -R 770 "$repName"
                     break
                 
                 else
