@@ -3,6 +3,23 @@ add_file () {
     cd ..
 }
 
+log_entry () {
+
+    if ![ -d "log.txt" ]
+    then
+        touch "log.txt"
+
+    fi
+
+    echo "Please enter the details of your edit"
+
+    read logText
+
+    echo "$logText" >> "log.txt"
+
+    
+}
+
 while true; do 
 
 
