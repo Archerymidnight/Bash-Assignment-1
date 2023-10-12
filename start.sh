@@ -8,7 +8,8 @@ Which option would you like to use today?
 
 read menuChoice
 
-if [$menuChoice = 1]; then 
+if [ $menuChoice = 1 ]
+then 
 
 echo "Enter the name of the new repository you wish to create
 "
@@ -18,8 +19,12 @@ read repName
 mkdir $repName || echo "A repository with this name already exists"
 
 
-fi 
 
-else if[$menuChoice = 0]; then
+
+elif [ $menuChoice = 0 ]
+
+then
 
 exit
+
+fi
