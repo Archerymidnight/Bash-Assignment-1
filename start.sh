@@ -16,3 +16,10 @@ echo "Enter the name of the new repository you wish to create
 read repName
 
 mkdir $repName || echo "A repository with this name already exists"
+
+
+fi 
+
+else if[$menuChoice = 0]; then
+
+exit
