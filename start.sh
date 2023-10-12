@@ -26,36 +26,39 @@ while true; do
 
         mkdir $repName 2>/dev/null || echo "A repository with this name already exists"
 
-        echo "Enter the name of the initial file for the repository"
+        if [ -d "$repName" ]
+        then
 
-        read fileName
+            echo "Enter the name of the initial file for the repository"
 
-        add_file "$fileName"
+            read fileName
 
-        while true; do
+            add_file "$fileName"
 
-            echo "Do you wish to add another file? Y/N"
+            while true; do
 
-            read newFileChoice
+                echo "Do you wish to add another file? Y/N"
 
-            if [ ${newFileChoice^^} = 'Y' ]
-            then
-                echo "Enter the name of the new file"
+                read newFileChoice
 
-                read fileName
+                if [ ${newFileChoice^^} = 'Y' ]
+                then
+                    echo "Enter the name of the new file"
 
-                add_file "$fileName"
-            elif [ ${newFileChoice^^} == "N" ]
-            then
-                break
-            
-            else
-            echo "Invalid input, please try again
+                    read fileName
 
-            "
+                    add_file "$fileName"
+                elif [ ${newFileChoice^^} == "N" ]
+                then
+                    break
+                
+                else
+                echo "Invalid input, please try again
 
-            fi
-        done
+                "
+
+                fi
+            done
 
     elif [ $menuChoice = 0 ]
     then
