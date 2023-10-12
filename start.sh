@@ -1,16 +1,20 @@
+#!/bin/bash
+
 add_file () {
-    touch $1
+    touch "$1"
     cd ..
 }
 
 log_entry () {
 
-    if ![ -d "log.txt" ]
+    if ! [ -d "log.txt" ]
     then
         touch "log.txt"
 
     fi
 
+
+    echo $(date) >> "log.txt"
     echo "Please enter the details of your edit"
 
     read logText
@@ -33,7 +37,7 @@ while true; do
 
     read menuChoice
 
-    if [ $menuChoice = 1 ]
+    if [ "$menuChoice" = 1 ]
     then 
 
         echo "Enter the name of the new repository you wish to create
@@ -41,7 +45,7 @@ while true; do
 
         read repName
 
-        mkdir $repName 2>/dev/null || echo "A repository with this name already exists"
+        mkdir "$repName" 2>/dev/null || echo "A repository with this name already exists"
 
         if [ -d "$repName" ]
         then
@@ -58,14 +62,14 @@ while true; do
 
                 read newFileChoice
 
-                if [ ${newFileChoice^^} = 'Y' ]
+                if [ "${newFileChoice^^}" = 'Y' ]
                 then
                     echo "Enter the name of the new file"
 
                     read fileName
 
                     add_file "$fileName"
-                elif [ ${newFileChoice^^} == "N" ]
+                elif [ "${newFileChoice^^}" == "N" ]
                 then
                     break
                 
@@ -76,8 +80,8 @@ while true; do
 
                 fi
             done
-
-    elif [ $menuChoice = 0 ]
+    fi
+    elif [ "$menuChoice" = 0 ]
     then
 
         exit
