@@ -115,16 +115,15 @@ then
 
         elif [ "$menuChoice" = 2 ]
         then
-
+            echo "foo"
 
         elif [ "$menuChoice" = 3 ]
         then
 
-        
+            echo "bar"
 
         elif [ "$menuChoice" = 0 ]
         then
-            valid_login
             exit
 
         fi
@@ -132,3 +131,4 @@ then
     done
 else
     echo "Invalid credentials. Try again"
+fi
