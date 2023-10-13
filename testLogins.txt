@@ -1,2 +1,2 @@
-userA passwordA
-userB passwordB
+userA
+userB

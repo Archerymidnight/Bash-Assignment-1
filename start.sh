@@ -13,50 +13,40 @@ log_entry () {
 
     fi
 
-
+    username >> "log.txt"
     date >> "log.txt"
     echo "Please enter the details of your edit"
 
     read logText
+
+    logText="${logText}\n"
 
     echo "$logText" >> "log.txt"
 
     
 }
 
-valid_login () {
-    local input="testLogins.txt"
-    while read -r line
-    do
-        IFS=' ' read -ra loginArray <<< "$line" 
+function valid_login () {
 
-        if [ "${loginArray[0]}" = "$1" ]
-        then
-            if [ "${loginArray[1]}" = "$2" ]
-            then
-                return 1
-            fi
-        else
-            return 0
-        fi
-    done < "$input"
+    isValidUser=$(cat testLogins.txt | grep -c "$username")
+
 }
 
 echo "Please enter your username"
 read username
-echo "Please enter your password"
-read password
 
-validLogin=valid_login "$username" "$password"
+truthful="true"
 
-if [ "$validLogin" ]
+valid_login "$username"
+
+if [ "$isValidUser" -eq 1 ]
 then
-        
+    
 
     while true; do 
 
 
-        echo "Welcome to the Codebase Management System
+        echo "Welcome to the Codebase Management System $username
 
         Which option would you like to use today?
         1: Make a new repository
