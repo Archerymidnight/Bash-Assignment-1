@@ -1,0 +1,2 @@
+userA passwordA
+userB passwordB
