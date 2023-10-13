@@ -13,7 +13,7 @@ log_entry () {
 
     fi
 
-    username >> "log.txt"
+    "$username" >> "log.txt"
     date >> "log.txt"
     echo "Please enter the details of your edit"
 
@@ -26,18 +26,11 @@ log_entry () {
     
 }
 
-function valid_login () {
-
-    isValidUser=$(cat testLogins.txt | grep -c "$username")
-
-}
 
 echo "Please enter your username"
 read username
 
-truthful="true"
-
-valid_login "$username"
+isValidUser=$(cmd < testLogins.txt | grep -c "$username")
 
 if [ "$isValidUser" -eq 1 ]
 then
@@ -90,7 +83,6 @@ then
                         add_file "$fileName"
                     elif [ "${newFileChoice^^}" == "N" ]
                     then
-                        chgrp -R checkout "$repName"
                         chmod -R 770 "$repName"
                         break
                     
@@ -105,12 +97,46 @@ then
 
         elif [ "$menuChoice" = 2 ]
         then
-            echo "foo"
+            cd testRepo
+
+            echo "Which file do you wish to check out?"
+
+            ls 
+
+            read checkoutChoice
+
+            if test -f "$checkoutChoice"
+            then
+                isCheckedOut=$(cmd < ../checkedout.txt | grep -c "$checkoutChoice")
+
+                if [ "$isCheckedOut" -eq 0 ]
+                then
+                    chmod 777 "$checkoutChoice"
+                    echo "{$username} {$checkoutChoice}" >> ../checkedout.txt
+                    nano "$checkoutChoice"
+                fi
+            fi
 
         elif [ "$menuChoice" = 3 ]
         then
+            cd testRepo
 
-            echo "bar"
+            echo "Which file do you wish to check in? You can only check in a file YOU checked out"
+
+            ls
+            
+            read checkinChoice
+
+            if test -f "$checkinChoice"
+            then
+                youCheckedOut=$(cmd < ../checkedout.txt | grep -c "{$username} {$checkinChoice}")
+
+                if [ "$youCheckedOut" -eq 1 ]
+                then
+                    chmod 770 "$checkinChoice"
+                    grep -v "$checkinChoice" checkedout.txt > temp && mv temp checkedout.txt
+                fi
+            fi
 
         elif [ "$menuChoice" = 0 ]
         then
