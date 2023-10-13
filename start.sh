@@ -97,7 +97,7 @@ then
 
         elif [ "$menuChoice" = 2 ]
         then
-            cd testRepo
+            cd testRepo || exit
 
             echo "Which file do you wish to check out?"
 
@@ -119,7 +119,7 @@ then
 
         elif [ "$menuChoice" = 3 ]
         then
-            cd testRepo
+            cd testRepo || return
 
             echo "Which file do you wish to check in? You can only check in a file YOU checked out"
 
