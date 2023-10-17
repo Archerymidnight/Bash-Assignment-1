@@ -52,7 +52,7 @@ function check_files{
 
      if [ "$action" == "1" ]; then
         read -p "Enter your username: " username
-        current_date=$(date +"%Y-%m-%d %T)
+        current_date=$(date +"%Y-%m-%d %T")
         read -p "Enter optional notes: " notes 
         echo "$username checked in '$file' on $current_date. Notes: $notes" >> "$current_repo/$file.log"
         echo "Checked in '$file'."
