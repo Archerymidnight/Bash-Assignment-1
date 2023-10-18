@@ -1,4 +1,3 @@
-#!/bin/bash
 declare -A projects
 current_repo=""
 choice=""
@@ -31,6 +30,7 @@ function delete_repo {
          current_repo=""
      fi
      echo "Repository '$name' deleted."
+}
 
 function add_file {
      read -p "Enter the file name to add: " file
@@ -39,7 +39,7 @@ function add_file {
      list_contents
 }
 
-function check_files{
+function check_files {
      read -p "Enter filename to check in/out: " file
      if [ ! -f "$current_repo/$file" ]; then
         echo "File '$file' does not exist in '$current_repo'."
@@ -94,14 +94,32 @@ function switch_repo {
 while true; do
      menu
      case $choice in
-          1) create_repo;;
-          2) delete_repo;;
-          3) add_file;;
-          4) remove_file;;
-          5) check_file;;
-          6) list_contents;;
-          7) switch_repo
-          8) echo "Existing..."; exit 0;;
-          *) echo "Invalid choice. Choose again.";;
+          1) 
+            create_repo
+            ;;
+          2) 
+            delete_repo
+            ;;
+          3) 
+            add_file
+            ;;
+          4) 
+            remove_file
+            ;;
+          5) 
+            check_file
+            ;;
+          6) 
+            list_contents
+            ;;
+          7) 
+            switch_repo
+            ;;
+          8) 
+            echo "Existing..."; 
+            exit 0
+            ;;
+          *) 
+            echo "Invalid choice. Choose again.";;
      esac
 done
