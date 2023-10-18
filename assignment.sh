@@ -116,7 +116,7 @@ while true; do
             switch_repo
             ;;
           8) 
-            echo "Existing..."; 
+            echo "Exiting..."; 
             exit 0
             ;;
           *) 
