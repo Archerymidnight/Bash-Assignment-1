@@ -1,6 +1,19 @@
 declare -A projects
 current_repo=""
 choice=""
+
+function load_existing_repos {
+    for d in */ ; do
+        repo_name=$(basename "$d")
+        projects["$repo_name"]="$repo_name"
+    done
+    log_activity "Loaded existing repositories."
+    echo "Loaded existing repositories."
+}
+
+load_existing_repos
+
+
 function menu {
      echo "1. Create a new project repository"
      echo "2. Delete a project repository"
@@ -35,7 +48,14 @@ function delete_repo {
 function add_file {
      read -p "Enter the file name to add: " file
      touch "$current_repo/$file"
-     echo "File '$file' removed from '$current_repo'."
+     echo "File '$file' added to '$current_repo'."
+     list_contents
+}
+
+function remove_file {
+     read -p "Enter the file name to remove: " file
+     rm  "$current_repo/$file"
+     echo "File '$file' deleted from '$current_repo'."
      list_contents
 }
 
