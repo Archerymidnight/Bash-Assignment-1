@@ -1,23 +1,24 @@
-#Anh Khoi Nguyen – 2540640
-#Arvin Shafiei Adjbisheh – 2503389
-#Hannah Kiernan – 2542983
-
 declare -A projects
-current_repo=""
-choice=""
+current_repo="" # The currently selected project repository
+choice=""       # The user's choice in the menu
+backup_dir="backup" # Directory to store backup files
 
+# Create the backup directory if it does not exist
+if [ ! -d "$backup_dir" ]; then
+    mkdir "$backup_dir"
+fi
+
+# Load existing project repositories into the 'projects' array
 function load_existing_repos {
     for d in */ ; do
         repo_name=$(basename "$d")
         projects["$repo_name"]="$repo_name"
     done
-    log_activity "Loaded existing repositories."
     echo "Loaded existing repositories."
 }
-
 load_existing_repos
 
-
+#Displays menu
 function menu {
      echo "___________________________________________________________________________________________________________"
      echo "1. Create new project repository (last created will be set as current repository)"
@@ -29,11 +30,13 @@ function menu {
      echo "7. Check in/out files from current project repository"
      echo "8. List contents of current repository"
      echo "9. Show the log"
-     echo "10. Exit"
+     echo "10. Restore the edited/deleted files"
+     echo "11. Exit"
      echo "___________________________________________________________________________________________________________"
      read -p "enter your choice: " choice
 }
 
+# Create new project repository
 function create_repo {
     read -p "Enter the names of the project repositories (comma-separated): " names_input
     IFS=',' read -ra names <<< "$names_input"
@@ -49,13 +52,8 @@ function create_repo {
     list_contents
 }
 
-
+# Delete a project repository
 function delete_repo {
-     echo "These are the available repositories:"
-     for repo in "${!projects[@]}"; do
-        echo "$repo"
-     done
-
      read -p "Enter the names of the project repositories to delete (comma-separated): " repos_input
      IFS=',' read -ra repos <<< "$repos_input"
      
@@ -75,7 +73,7 @@ function delete_repo {
      done
 }
 
-
+# Add a new file to the current repository
 function add_file {
     read -p "Enter the file names to add (comma-separated): " files_input
     IFS=',' read -ra files <<< "$files_input"
@@ -89,13 +87,22 @@ function add_file {
     list_contents
 }
 
+# Remove a file from the current repository and back it up
 function remove_file {
+     if [ -n "$current_repo" ]; then
+        echo "Contents of '$current_repo' repository:"
+        ls "$current_repo"
+     else
+        echo "No current repository selected."
+     fi
+
     read -p "Enter the file names to remove (comma-separated): " files_input
     IFS=',' read -ra files <<< "$files_input"
     
     for file in "${files[@]}"; do
         trimmed_file=$(echo "$file" | xargs)  # Trim whitespaces
         if [ -f "$current_repo/$trimmed_file" ]; then
+            backup_file "$current_repo" "$trimmed_file"
             rm "$current_repo/$trimmed_file"
             echo "File '$trimmed_file' deleted from '$current_repo'."
         else
@@ -106,13 +113,15 @@ function remove_file {
     list_contents
 }
 
-
+# Check files in or out of the current repository
 function check_files {
      read -p "Enter filename to check in/out: " file
      if [ ! -f "$current_repo/$file" ]; then
         echo "File '$file' does not exist in '$current_repo'."
         return
      fi
+     
+     backup_file "$current_repo" "$file"
 
      echo "1. Check in"
      echo "2. Check out"
@@ -127,6 +136,7 @@ function check_files {
         echo "Checked in '$file'."
      elif [ "$action" == "2" ]; then
         chmod +w "$current_repo/$file"
+        nano "$current_repo/$file"
         read -p "Enter your user name: " username
         current_date=$(date +"%Y-%m-%d %T")
         read -p "Enter optonal notes: " notes
@@ -137,6 +147,7 @@ function check_files {
      fi
 }
  
+# Display the contents of the current repository
 function list_contents {
      if [ -n "$current_repo" ]; then
         echo "Contents of '$current_repo' repository:"
@@ -146,6 +157,7 @@ function list_contents {
      fi
 }
 
+# Display the names of existing repositories
 function show_repo {
       echo "These are the available repositories:"
      for repo in "${!projects[@]}"; do
@@ -153,6 +165,7 @@ function show_repo {
      done
 }
   
+# Switch to a different project repository
 function switch_repo {
      echo "These are the available repositories:"
      for repo in "${!projects[@]}"; do
@@ -168,6 +181,8 @@ function switch_repo {
      fi
 }
 
+
+# Display the log for a file in the current repository
 function show_log {
     if [ -z "$current_repo" ]; then
         echo "No current repository selected."
@@ -184,6 +199,30 @@ function show_log {
         cat "$current_repo/$file.log"
     else
         echo "No log available for '$file'."
+    fi
+}
+ 
+# Backup a file
+function backup_file {
+    local repo=$1
+    local file=$2
+    if [ -f "$repo/$file" ]; then
+        cp "$repo/$file" "$backup_dir/${repo}_$file"
+    fi
+}
+
+# Restore a file from backup
+function restore_backup {
+    echo "List of backed up files for repositories:"
+    ls "$backup_dir" | grep "${current_repo}_"
+    
+    read -p "Enter the name of the file (without ${current_repo}_ prefix) to restore: " file
+    
+    if [ -f "$backup_dir/${current_repo}_$file" ]; then
+        cp "$backup_dir/${current_repo}_$file" "$current_repo/$file"
+        echo "File '$file' restored to '$current_repo'."
+    else
+        echo "No backup available for '$file'."
     fi
 }
 
@@ -218,7 +257,10 @@ while true; do
           9)
             show_log
             ;;
-          10) 
+          10)
+            restore_backup
+            ;;
+          11) 
             echo "Exiting..."; 
             exit 0
             ;;
