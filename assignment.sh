@@ -1,3 +1,7 @@
+#Anh Khoi Nguyen – 2540640
+#Arvin Shafiei Adjbisheh – 2503389
+#Hannah Kiernan – 2542983
+
 declare -A projects
 current_repo=""
 choice=""
