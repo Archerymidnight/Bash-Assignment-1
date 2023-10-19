@@ -2,6 +2,7 @@ declare -A projects
 current_repo=""
 choice=""
 
+<<<<<<< Updated upstream
 # Function to log activities
 function log_activity {
     if [ -n "$current_repo" ]; then
@@ -66,6 +67,90 @@ function edit_file {
 }
 
 # ... (other existing functions)
+=======
+function load_existing_repos {
+    for d in */ ; do
+        repo_name=$(basename "$d")
+        projects["$repo_name"]="$repo_name"
+    done
+    echo "Loaded existing repositories."
+}
+
+load_existing_repos
+
+function menu {
+     echo "___________________________________________________________________________________________________________"
+     echo "1. Create new project repository (last created will be set as current repository)"
+     echo "2. Delete project repository"
+     echo "3. Go to/Switch to project repository"
+     echo "4. Show existing repositories"
+     echo "5. Add file to the current project repository"
+     echo "6. Remove file from the current project repository"
+     echo "7. Check in/out files from current project repository"
+     echo "8. List contents of current repository"
+     echo "9. Show the log"
+     echo "10. Rollback file to a previous version"
+     echo "11. Archive current repository"
+     echo "12. Access existing archive"
+     echo "13. Exit"
+     echo "___________________________________________________________________________________________________________"
+     read -p "Enter your choice: " choice
+}
+
+# ... Your existing functions here ...
+
+function rollback_file {
+    read -p "Enter the filename to rollback: " file
+    if [ ! -f "$current_repo/$file" ]; then
+        echo "File '$file' does not exist in '$current_repo'."
+        return
+    fi
+    
+    echo "Available versions:"
+    ls "$current_repo" | grep "$file.version."
+    
+    read -p "Enter the version to rollback to (e.g., $file.version.1): " version_file
+    
+    if [ -f "$current_repo/$version_file" ]; then
+        cp "$current_repo/$version_file" "$current_repo/$file"
+        echo "Rolled back '$file' to '$version_file'."
+    else
+        echo "Version '$version_file' does not exist."
+    fi
+}
+
+function archive_repo {
+    read -p "Enter the archive format (tar/zip): " format
+    if [ "$format" == "tar" ]; then
+        tar -cvf "$current_repo.tar" "$current_repo/"
+        echo "Archive '$current_repo.tar' created."
+    elif [ "$format" == "zip" ]; then
+        zip -r "$current_repo.zip" "$current_repo/"
+        echo "Archive '$current_repo.zip' created."
+    else
+        echo "Invalid format."
+    fi
+}
+
+function access_archive {
+    echo "Available archives:"
+    ls | grep -E "\.tar$|\.zip$"
+    
+    read -p "Enter the name of the archive to access: " archive
+    
+    if [ -f "$archive" ]; then
+        if [[ "$archive" == *.tar ]]; then
+            tar -tvf "$archive"
+        elif [[ "$archive" == *.zip ]]; then
+            unzip -l "$archive"
+        else
+            echo "Unsupported archive format."
+        fi
+    else
+        echo "Archive '$archive' does not exist."
+    fi
+}
+>>>>>>> Stashed changes
 
 while true; do
      menu
@@ -77,6 +162,7 @@ while true; do
             delete_repo
             ;;
           3)
+<<<<<<< Updated upstream
             add_file
             ;;
           4)
@@ -86,6 +172,20 @@ while true; do
             edit_file
             ;;
           6)
+=======
+            switch_repo
+            ;;
+          4)
+            show_repo
+            ;;
+          5)
+            add_file
+            ;;
+          6)
+            remove_file
+            ;;
+          7)
+>>>>>>> Stashed changes
             check_files
             ;;
           7)
@@ -94,10 +194,23 @@ while true; do
           8)
             switch_repo
             ;;
+<<<<<<< Updated upstream
           9)
             if [ -n "$current_repo" ]; then
                 log_activity "Exiting..."
             fi
+=======
+          10)
+            rollback_file
+            ;;
+          11)
+            archive_repo
+            ;;
+          12)
+            access_archive
+            ;;
+          13)
+>>>>>>> Stashed changes
             echo "Exiting...";
             exit 0
             ;;
