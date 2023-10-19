@@ -1,4 +1,3 @@
-# Declare an associative array to store project repositories
 declare -A projects
 current_repo="" # The currently selected project repository
 choice=""       # The user's choice in the menu
